@@ -1,0 +1,4 @@
+interface:
+  display_name: "Blender Playbook"
+  short_description: "积累并复用个人 Blender 工作流、技巧、诊断与自动化经验"
+  default_prompt: "Use $blender-playbook to solve this Blender task using my validated workflows and experience cards."
