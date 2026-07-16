@@ -9,14 +9,14 @@ from pathlib import Path
 
 import bpy
 import numpy as np
-from bpy.props import StringProperty
+from bpy.props import BoolProperty, FloatProperty, StringProperty
 from bpy_extras.io_utils import ImportHelper
 
 
 bl_info = {
     "name": "DA3 Colored GLB Importer",
     "author": "Purextreme",
-    "version": (0, 1, 0),
+    "version": (0, 2, 0),
     "blender": (5, 2, 0),
     "location": "File > Import > DA3 Colored Point Cloud (.glb)",
     "description": "Import DA3 GLB point clouds and restore COLOR_0 as unlit color",
@@ -27,6 +27,8 @@ bl_info = {
 ATTRIBUTE_NAME = "color"
 MATERIAL_TAG = "da3_glb_importer_material"
 NODE_GROUP_TAG = "da3_glb_importer_node_group"
+NODE_GROUP_VERSION_TAG = "da3_glb_importer_node_group_version"
+NODE_GROUP_VERSION = 3
 
 
 def _read_glb(path: Path) -> tuple[dict, bytes]:
@@ -180,24 +182,73 @@ def _tagged_material() -> bpy.types.Material:
 
 
 def _tagged_node_group(material: bpy.types.Material) -> bpy.types.NodeTree:
-    for group in bpy.data.node_groups:
-        if group.bl_idname == "GeometryNodeTree" and group.get(NODE_GROUP_TAG):
-            return group
+    group = None
+    for candidate in bpy.data.node_groups:
+        if candidate.bl_idname == "GeometryNodeTree" and candidate.get(NODE_GROUP_TAG):
+            if candidate.get(NODE_GROUP_VERSION_TAG) == NODE_GROUP_VERSION:
+                return candidate
+            group = candidate
+            break
 
-    group = bpy.data.node_groups.new("DA3 Point Color Display", "GeometryNodeTree")
+    if group is None:
+        group = bpy.data.node_groups.new("DA3 Point Color Display", "GeometryNodeTree")
+    else:
+        group.nodes.clear()
+        group.interface.clear()
+
     group[NODE_GROUP_TAG] = True
+    group[NODE_GROUP_VERSION_TAG] = NODE_GROUP_VERSION
     group.interface.new_socket(name="Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+    override_radius = group.interface.new_socket(
+        name="Override Point Radius",
+        in_out="INPUT",
+        socket_type="NodeSocketBool",
+    )
+    override_radius.default_value = False
+    point_radius = group.interface.new_socket(
+        name="Point Radius",
+        in_out="INPUT",
+        socket_type="NodeSocketFloat",
+    )
+    point_radius.default_value = 0.01
+    point_radius.min_value = 0.0
+    point_radius.max_value = 1000.0
     group.interface.new_socket(name="Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
     group_input = group.nodes.new("NodeGroupInput")
+    set_radius = group.nodes.new("GeometryNodeSetPointRadius")
+    geometry_switch = group.nodes.new("GeometryNodeSwitch")
+    geometry_switch.input_type = "GEOMETRY"
     set_material = group.nodes.new("GeometryNodeSetMaterial")
     set_material.inputs["Material"].default_value = material
     group_output = group.nodes.new("NodeGroupOutput")
-    group.links.new(group_input.outputs["Geometry"], set_material.inputs["Geometry"])
+    group.links.new(group_input.outputs["Geometry"], set_radius.inputs["Points"])
+    group.links.new(group_input.outputs["Point Radius"], set_radius.inputs["Radius"])
+    group.links.new(group_input.outputs["Geometry"], geometry_switch.inputs["False"])
+    group.links.new(set_radius.outputs["Points"], geometry_switch.inputs["True"])
+    group.links.new(group_input.outputs["Override Point Radius"], geometry_switch.inputs["Switch"])
+    group.links.new(geometry_switch.outputs["Output"], set_material.inputs["Geometry"])
     group.links.new(set_material.outputs["Geometry"], group_output.inputs["Geometry"])
     return group
 
 
-def _apply_colors(obj: bpy.types.Object, colors: np.ndarray, node_group: bpy.types.NodeTree) -> None:
+def _input_socket(node_group: bpy.types.NodeTree, name: str):
+    for item in node_group.interface.items_tree:
+        if item.item_type == "SOCKET" and item.in_out == "INPUT" and item.name == name:
+            return item
+    raise RuntimeError(f"Geometry Nodes 缺少输入：{name}")
+
+
+def _set_modifier_input(modifier: bpy.types.NodesModifier, socket, value) -> None:
+    getattr(modifier.properties.inputs, socket.identifier).value = value
+
+
+def _apply_colors(
+    obj: bpy.types.Object,
+    colors: np.ndarray,
+    node_group: bpy.types.NodeTree,
+    override_point_radius: bool,
+    point_radius: float,
+) -> None:
     point_count = len(obj.data.points)
     if len(colors) != point_count:
         raise RuntimeError(f"点数不匹配：GLB {len(colors)}，Blender {point_count}")
@@ -209,6 +260,8 @@ def _apply_colors(obj: bpy.types.Object, colors: np.ndarray, node_group: bpy.typ
     attribute.data.foreach_set("color", colors.ravel())
     modifier = obj.modifiers.get("DA3 Point Color") or obj.modifiers.new("DA3 Point Color", "NODES")
     modifier.node_group = node_group
+    _set_modifier_input(modifier, _input_socket(node_group, "Override Point Radius"), override_point_radius)
+    _set_modifier_input(modifier, _input_socket(node_group, "Point Radius"), point_radius)
 
 
 def _configure_display(scene: bpy.types.Scene) -> None:
@@ -250,6 +303,27 @@ class IMPORT_SCENE_OT_da3_colored_glb(bpy.types.Operator, ImportHelper):
 
     filename_ext = ".glb"
     filter_glob: StringProperty(default="*.glb", options={"HIDDEN"})
+    override_point_radius: BoolProperty(
+        name="Override Point Radius",
+        description="Override the native point radius with one uniform value",
+        default=False,
+    )
+    point_radius: FloatProperty(
+        name="Point Radius",
+        description="Uniform point radius in scene units when override is enabled",
+        default=0.01,
+        min=0.0,
+        soft_max=1.0,
+        subtype="DISTANCE",
+        unit="LENGTH",
+    )
+
+    def draw(self, _context):
+        layout = self.layout
+        layout.prop(self, "override_point_radius")
+        row = layout.row()
+        row.enabled = self.override_point_radius
+        row.prop(self, "point_radius")
 
     def execute(self, context):
         path = Path(self.filepath)
@@ -272,7 +346,13 @@ class IMPORT_SCENE_OT_da3_colored_glb(bpy.types.Operator, ImportHelper):
             node_group = _tagged_node_group(material)
             for spec, obj in matches:
                 colors = _decode_color_0(document, binary, spec)
-                _apply_colors(obj, colors, node_group)
+                _apply_colors(
+                    obj,
+                    colors,
+                    node_group,
+                    self.override_point_radius,
+                    self.point_radius,
+                )
             _configure_display(context.scene)
 
             total_points = sum(spec["count"] for spec, _obj in matches)

@@ -6,7 +6,7 @@ Blender 5.2 插件，用于一键导入 DA3 生成的 GLB 彩色点云。
 
 ## 安装
 
-1. 使用仓库 `dist/da3_glb_importer-0.1.0.zip`，或者自行将 `da3_glb_importer` 文件夹压缩为 ZIP。
+1. 使用仓库 `dist/da3_glb_importer-0.2.0.zip`，或者自行将 `da3_glb_importer` 文件夹压缩为 ZIP。
 2. 在 Blender 中打开 `Edit > Preferences > Add-ons`。
 3. 选择 `Install from Disk` 并安装 ZIP。
 4. 启用 `DA3 Colored GLB Importer`。
@@ -14,6 +14,8 @@ Blender 5.2 插件，用于一键导入 DA3 生成的 GLB 彩色点云。
 ## 使用
 
 选择 `File > Import > DA3 Colored Point Cloud (.glb)`，然后选择 DA3 GLB 文件。
+
+导入选项中的 `Override Point Radius` 默认关闭，此时不会修改 Blender 原生点半径。开启后，`Point Radius` 会以场景单位统一覆盖所有点的半径。导入后也可以直接在 `DA3 Point Color` Geometry Nodes 修改器中随时开关和调整这两个参数。
 
 插件自动完成：
 
@@ -23,6 +25,7 @@ Blender 5.2 插件，用于一键导入 DA3 生成的 GLB 彩色点云。
 - 将图像来源的 sRGB 颜色转换为 Linear
 - 创建点域 `FLOAT_COLOR` 属性 `color`
 - 使用 Geometry Nodes 设置 Emission 材质
+- 可选覆盖点云半径，默认保留原生大小
 - 切换到 `Standard`、黑色 World 和无场景灯光的 Rendered 视图
 
 如果点数无法唯一匹配或 GLB 颜色格式不符合预期，插件会停止并撤销本次导入对象，不会猜测颜色对应关系。

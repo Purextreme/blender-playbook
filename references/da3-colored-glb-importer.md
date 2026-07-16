@@ -20,7 +20,7 @@ Enabling the option imported the same primitive as native `POINTCLOUD`, which is
 
 ## Installation and use
 
-The source is in [`../addons/da3_glb_importer`](../addons/da3_glb_importer). Install [`../dist/da3_glb_importer-0.1.0.zip`](../dist/da3_glb_importer-0.1.0.zip) through Blender Preferences and enable `DA3 Colored GLB Importer`.
+The source is in [`../addons/da3_glb_importer`](../addons/da3_glb_importer). Install [`../dist/da3_glb_importer-0.2.0.zip`](../dist/da3_glb_importer-0.2.0.zip) through Blender Preferences and enable `DA3 Colored GLB Importer`.
 
 Import through the dedicated menu entry rather than Blender's standard glTF entry. The add-on automatically:
 
@@ -31,6 +31,8 @@ Import through the dedicated menu entry rather than Blender's standard glTF entr
 5. Converts sRGB RGB values to Linear and preserves alpha.
 6. Applies a shared Emission material through Geometry Nodes.
 7. Configures Standard/sRGB display, a black World, and a rendered viewport that ignores scene lights.
+
+`Override Point Radius` is disabled by default, so the Geometry Nodes modifier preserves Blender's native point radius. Enable it to apply the uniform `Point Radius` value. Both controls remain exposed on the object's `DA3 Point Color` modifier after import.
 
 ## Failure behavior
 
@@ -46,5 +48,7 @@ Verified on Blender 5.2.0 LTS with:
 
 - `scene (2).glb`: 406,425 point colors restored exactly; rendered color output confirmed without lights.
 - `scene (1).glb`: 1,000,000 point colors restored exactly; repeat import and shared resource reuse confirmed.
+- Radius override disabled: native `0.01` radius passed through without creating a `radius` attribute.
+- Radius override enabled at `0.025`: evaluated point radius and `radius` attribute both matched `0.025`.
 
 The `.blend` used for testing remained unsaved.

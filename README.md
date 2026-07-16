@@ -20,7 +20,7 @@ git -C "$env:USERPROFILE\.codex\skills\blender-playbook" pull --ff-only
 
 ## Blender 插件
 
-`addons/da3_glb_importer` 提供 `File > Import > DA3 Colored Point Cloud (.glb)`，用于一键导入 DA3 GLB、恢复点云 `COLOR_0`、完成 sRGB 到 Linear 映射，并建立不依赖灯光的 Emission 显示。可直接安装 [`dist/da3_glb_importer-0.1.0.zip`](dist/da3_glb_importer-0.1.0.zip)。
+`addons/da3_glb_importer` 提供 `File > Import > DA3 Colored Point Cloud (.glb)`，用于一键导入 DA3 GLB、恢复点云 `COLOR_0`、完成 sRGB 到 Linear 映射，并建立不依赖灯光的 Emission 显示。点半径覆盖默认关闭，需要时可在导入选项或 Geometry Nodes 修改器中开启。可直接安装 [`dist/da3_glb_importer-0.2.0.zip`](dist/da3_glb_importer-0.2.0.zip)。
 
 安装方法见 [`addons/da3_glb_importer/README.md`](addons/da3_glb_importer/README.md)。
 
