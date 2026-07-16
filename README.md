@@ -18,10 +18,17 @@ git clone https://github.com/Purextreme/blender-playbook.git "$env:USERPROFILE\.
 git -C "$env:USERPROFILE\.codex\skills\blender-playbook" pull --ff-only
 ```
 
+## Blender 插件
+
+`addons/da3_glb_importer` 提供 `File > Import > DA3 Colored Point Cloud (.glb)`，用于一键导入 DA3 GLB、恢复点云 `COLOR_0`、完成 sRGB 到 Linear 映射，并建立不依赖灯光的 Emission 显示。可直接安装 [`dist/da3_glb_importer-0.1.0.zip`](dist/da3_glb_importer-0.1.0.zip)。
+
+安装方法见 [`addons/da3_glb_importer/README.md`](addons/da3_glb_importer/README.md)。
+
 ## 当前内容
 
 - GLB/GLTF 点云 `COLOR_0` 丢失后的诊断与恢复
 - 不依赖灯光的点云属性色与 Emission 显示流程
+- DA3 彩色 GLB 一键导入插件
 - 可复用的 `restore_glb_point_colors.py` 恢复脚本
 
 核心使用说明见 [`SKILL.md`](SKILL.md)，详细经验卡位于 [`references/`](references/)。
