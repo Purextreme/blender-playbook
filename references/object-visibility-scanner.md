@@ -7,14 +7,14 @@ Use for product/CAD assembly cleanup when the user wants objects classified by e
 ## Reusable resources
 
 - Source: [`../addons/orange_visibility_scanner/__init__.py`](../addons/orange_visibility_scanner/__init__.py).
-- Installation ZIP: [`../dist/orange_visibility_scanner-1.0.1.zip`](../dist/orange_visibility_scanner-1.0.1.zip).
+- Installation ZIP: [`../dist/orange_visibility_scanner-1.0.2.zip`](../dist/orange_visibility_scanner-1.0.2.zip).
 - User instructions: [`../addons/orange_visibility_scanner/README.md`](../addons/orange_visibility_scanner/README.md).
 - Blender regression tests: [`../tests/visibility_scanner_blender.py`](../tests/visibility_scanner_blender.py).
 - Build with `python scripts/build_visibility_scanner.py` from the repository root.
 
 ## Core conclusions and decision points
 
-- Prefer the existing `🍊 橘子 · Visibility Scanner` over rewriting a scene-specific scanner. The sidebar is `N > 🍊 橘子`; the operator is `bpy.ops.object.visibility_scan('EXEC_DEFAULT')`.
+- Prefer the existing `🍊 Visibility Scanner - Object Classification` over rewriting a scene-specific scanner. The sidebar is `N > 🍊 Visibility`; the operator is `bpy.ops.object.visibility_scan('EXEC_DEFAULT')`.
 - Default to GPU ID plus BVH rechecking. Direct GPU rasterization avoids full-render startup and material changes; BVH rays can find visible surfaces too small to cover a pixel. Neither method guarantees complete coverage with finite samples.
 - Compare methods on the actual geometry before claiming one is faster. Higher GPU resolution increases framebuffer/readback cost, while BVH cost grows with directions, surface samples and hidden-object count.
 - Read evaluated meshes and normalize world coordinates for numerical stability. Keep original meshes, modifiers, parent links and materials intact.

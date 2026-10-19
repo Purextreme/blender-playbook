@@ -1,12 +1,12 @@
-# 🍊 橘子 · Visibility Scanner
+# 🍊 Visibility Scanner - Object Classification
 
 非破坏性的对象级可见性分类插件。实际验证版本：Blender 5.2.2 LTS；最低声明版本为 4.2，其他版本尚未实测。
 
 ## 安装与使用
 
-1. 下载仓库的 `dist/orange_visibility_scanner-1.0.1.zip`。
-2. 在 `Edit > Preferences > Add-ons > Install from Disk` 安装 ZIP，启用 `🍊 橘子 · Visibility Scanner`。
-3. 回到 3D 视图，按 `N`，打开 `🍊 橘子` 页签。
+1. 下载仓库的 `dist/orange_visibility_scanner-1.0.2.zip`。
+2. 在 `Edit > Preferences > Add-ons > Install from Disk` 安装 ZIP，启用 `🍊 Visibility Scanner - Object Classification`。
+3. 回到 3D 视图，按 `N`，打开 `🍊 Visibility` 页签。
 4. 范围选择可见场景，或所选对象及其后代组成的装配体。确保扫描范围包含要参与遮挡的外壳。
 5. 使用默认 `GPU + BVH 复核`，点击检测并分类。扫描中可按 `Esc` 取消，取消不会替换已有分类。
 

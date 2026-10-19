@@ -1,9 +1,9 @@
 bl_info = {
-    'name': '🍊 橘子 · Visibility Scanner',
+    'name': '🍊 Visibility Scanner - Object Classification',
     'author': 'Purextreme',
-    'version': (1, 0, 1),
+    'version': (1, 0, 2),
     'blender': (4, 2, 0),
-    'location': 'View3D > Sidebar > 🍊 橘子',
+    'location': 'View3D > Sidebar > 🍊 Visibility',
     'description': 'Classify visible objects and interior candidates without deleting geometry',
     'category': 'Object',
 }
@@ -514,7 +514,7 @@ class VISSCAN_PT_panel(bpy.types.Panel):
     bl_idname = 'VISSCAN_PT_panel'
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = '🍊 橘子'
+    bl_category = '🍊 Visibility'
 
     def draw(self, context):
         layout, settings = self.layout, context.scene.vis_scan
