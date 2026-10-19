@@ -26,6 +26,7 @@ Apply the user's verified Blender practices before improvising. Keep this file c
 
 ## Personal operating principles
 
+- For personal custom Blender add-ons, preserve the original user-facing names and prepend exactly one `🍊 ` (emoji plus a space) to the add-on name, panel title and sidebar tab. For example, `Visibility` becomes `🍊 Visibility`. Do not add the word `橘子`, otherwise rename the original text, or duplicate an existing prefix. Keep technical module/package names and operator IDs unchanged.
 - Preserve the original asset and existing user work.
 - Diagnose from actual Blender state and source-file structure, not appearance alone.
 - Separate import fidelity, shader interpretation, color management, and viewport mode; each can independently change the result.
