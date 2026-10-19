@@ -22,6 +22,7 @@ Apply the user's verified Blender practices before improvising. Keep this file c
 - For GLB/GLTF point clouds that lose vertex colors on import, read [references/glb-pointcloud-color-recovery.md](references/glb-pointcloud-color-recovery.md).
 - For vertex or point colors that must match source imagery without lighting, read [references/unlit-attribute-color.md](references/unlit-attribute-color.md).
 - For installing or using the one-click DA3 colored GLB importer, read [references/da3-colored-glb-importer.md](references/da3-colored-glb-importer.md).
+- For detecting externally visible objects and interior candidates without deleting geometry, use the 🍊 Visibility Scanner and read [references/object-visibility-scanner.md](references/object-visibility-scanner.md).
 
 ## Personal operating principles
 
