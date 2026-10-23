@@ -19,6 +19,7 @@ Apply the user's verified Blender practices before improvising. Keep this file c
 
 ## Card routing
 
+- For camera-view Material Preview stills or animation sequences on Blender 5.2, read [references/material-preview-export.md](references/material-preview-export.md) and use [scripts/export_material_preview.py](scripts/export_material_preview.py); complete sample verification before treating its appearance as validated.
 - For GLB/GLTF point clouds that lose vertex colors on import, read [references/glb-pointcloud-color-recovery.md](references/glb-pointcloud-color-recovery.md).
 - For vertex or point colors that must match source imagery without lighting, read [references/unlit-attribute-color.md](references/unlit-attribute-color.md).
 - For installing or using the one-click DA3 colored GLB importer, read [references/da3-colored-glb-importer.md](references/da3-colored-glb-importer.md).
